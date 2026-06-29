@@ -1,42 +1,31 @@
 ---
+version: "3"
 services:
-  db:
-    image: chinnala/harika:db_image
-    ports:
-      - "3306:3306"
-    deploy:
-      replicas: 1
-  auth_service:
-    image: chinnala/harika:auth_image
-    ports:
-      - "5001:5001"
-    deploy:
-      replicas: 1
-    depends_on:
-      - db
-  book_service:
-    image: chinnala/harika:book_image
-    ports:
-      - "5002:5002"
-    deploy:
-      replicas: 1
-    depends_on:
-      - db
-  borrow_service:
-    image: chinnala/harika:borrow_image
-    ports:
-      - "5003:5003"
-    deploy:
-      replicas: 1
-    depends_on:
-      - db
-  app_service:
-    image: chinnala/harika:frontend
-    ports:
-      - "5000:5000"
-    deploy:
-      replicas: 1
-    depends_on:
-      - auth_service
-      - book_service
-      - borrow_service
+db:
+container_name: db
+build: ./database/
+ports:- "3306:3306"
+networks:- mynet
+auth:
+container_name: auth_service
+build: ./auth/
+ports:- "5001:5001"
+networks:- mynet
+books:
+container_name: book_service
+build: ./book/
+ports:- "5002:5002"
+networks:- mynet
+borrow:
+container_name: borrow_service
+build: ./borrow/
+ports:- "5003:5003"
+networks:- mynet
+frontend:
+container_name: frontend
+build: ./
+ports:- "5000:5000"
+networks:- mynet
+networks:
+mynet:
+driver: bridge
