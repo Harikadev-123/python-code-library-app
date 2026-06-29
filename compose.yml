@@ -31,7 +31,7 @@ services:
     depends_on:
       - db
   app_service:
-    image: chinnala/harika:app_image
+    image: chinnala/harika:frontend
     ports:
       - "5000:5000"
     deploy:
