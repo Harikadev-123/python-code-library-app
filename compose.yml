@@ -1,46 +1,42 @@
-version: "3"
-
+---
 services:
   db:
-    container_name: db
-    build: ./database/
+    image: shaikmustafa/flm2026:dbimage
     ports:
       - "3306:3306"
-    networks:
-      - mynet
-
-  auth:
-    container_name: auth_service
-    build: ./auth/
+    deploy:
+      replicas: 1
+  auth_service:
+    image: shaikmustafa/flm2026:authimage
     ports:
       - "5001:5001"
-    networks:
-      - mynet
-
-  books:
-    container_name: book_service
-    build: ./book/
+    deploy:
+      replicas: 1
+    depends_on:
+      - db
+  book_service:
+    image: shaikmustafa/flm2026:bookimage
     ports:
       - "5002:5002"
-    networks:
-      - mynet
-
-  borrow:
-    container_name: borrow_service
-    build: ./borrow/
+    deploy:
+      replicas: 1
+    depends_on:
+      - db
+  borrow_service:
+    image: shaikmustafa/flm2026:borrowimage
     ports:
       - "5003:5003"
-    networks:
-      - mynet
-
-  frontend:
-    container_name: frontend
-    build: ./
+    deploy:
+      replicas: 1
+    depends_on:
+      - db
+  app_service:
+    image: shaikmustafa/flm2026:appimage
     ports:
       - "5000:5000"
-    networks:
-      - mynet
-
-networks:
-  mynet:
-    driver: bridge
+    deploy:
+      replicas: 1
+    depends_on:
+      - auth_service
+      - book_service
+      - borrow_service
